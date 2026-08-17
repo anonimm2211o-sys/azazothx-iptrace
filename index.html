@@ -18,7 +18,7 @@
       max-width: 880px;
       margin: 0 auto;
       position: relative;
-      background: rgba(0, 0, 0, 0.65); /* tambah dikit biar teks kebaca */
+      background: rgba(0, 0, 0, 0.65);
       padding: 24px 24px 20px;
       border-radius: 12px;
       border: 1px solid rgba(255, 255, 255, 0.08);
@@ -159,6 +159,7 @@
       font-size: 15px;
       color: #ffffff;
       font-weight: 600;
+      word-break: break-all;
     }
     .footer {
       margin-top: 40px;
@@ -273,13 +274,28 @@
 
       logLine('[+] berhasil mengambil data', 'l-ok');
 
-      document.getElementById('resIp').textContent = data.ip;
-      document.getElementById('resDomain').textContent = data.domain;
-      document.getElementById('resRealIp').textContent = data.ip;
-      document.getElementById('resCountry').textContent = data.country;
-      document.getElementById('resCity').textContent = data.city;
-      document.getElementById('resIsp').textContent = data.isp;
-      document.getElementById('resPorts').textContent = data.openPorts.join(', ') || '—';
+      // ========== ISI RESULT CARD ==========
+      document.getElementById('resIp').textContent = data.origin_ip || '—';
+      document.getElementById('resDomain').textContent = data.domain || '—';
+      document.getElementById('resRealIp').textContent = data.origin_ip || '—';
+      document.getElementById('resCountry').textContent = data.country || '—';
+      document.getElementById('resCity').textContent = data.city || '—';
+      document.getElementById('resIsp').textContent = data.isp || '—';
+      document.getElementById('resPorts').textContent = data.open_ports?.join(', ') || '—';
+
+      // ========== OPSIONAL: LOG TAMBAHAN ==========
+      if (data.cloudflare_detected !== undefined) {
+        logLine(`[+] cloudflare detected: ${data.cloudflare_detected ? '✅' : '❌'}`, 'l-muted');
+      }
+      if (data.discovered_ips && data.discovered_ips.length > 0) {
+        logLine(`[+] total IP ditemukan: ${data.discovered_ips.length}`, 'l-muted');
+      }
+      if (data.sources) {
+        const srcList = Object.keys(data.sources).filter(k => data.sources[k]?.length > 0);
+        if (srcList.length > 0) {
+          logLine(`[+] sumber: ${srcList.join(', ')}`, 'l-muted');
+        }
+      }
 
     } catch (err) {
       logLine('[!] gagal mengambil data: ' + err.message, 'l-warn');
