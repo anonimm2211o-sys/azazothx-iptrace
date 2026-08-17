@@ -256,8 +256,9 @@
     c.onclick = () => { input.value = c.dataset.fill; input.focus(); };
   });
 
-  // ======== API ========
-  const API_BASE = 'https://beckend-iptrace.vercel.app/api/lookup';
+  // ======== API ENDPOINTS (GANTI DENGAN URL DEPLOY LU) ========
+  const API_VERCEL = 'https://beckend-iptrace.vercel.app/api/lookup';
+  const API_CLOUDRECON = 'https://cloudrecon-api.vercel.app/api';
 
   async function runLookup() {
     const domain = input.value.trim().replace(/^https?:\/\//, '').split('/')[0];
@@ -268,42 +269,60 @@
     runBtn.textContent = '⏳ LOOKUP...';
 
     try {
-      const res = await fetch(`${API_BASE}?domain=${domain}`);
-      const data = await res.json();
-      if (data.error) throw new Error(data.error);
+      // ===== PANGGIL DUA API PARALEL =====
+      const [resVercel, resCloudRecon] = await Promise.all([
+        fetch(`${API_VERCEL}?domain=${domain}`),
+        fetch(`${API_CLOUDRECON}?domain=${domain}`)
+      ]);
 
-      logLine('[+] berhasil mengambil data', 'l-ok');
+      const dataVercel = await resVercel.json();
+      const dataCloudRecon = await resCloudRecon.json();
 
-      // ========== ORIGIN EXPOSED ==========
-      const exposed = data.origin_ip && data.origin_ip !== 'tidak ditemukan' ? 'YES' : 'NO';
+      // ===== GABUNG HASIL =====
+      const combined = {
+        domain: domain,
+        origin_ip: dataCloudRecon.origin_ip || dataVercel.origin_ip || 'tidak ditemukan',
+        discovered_ips: dataCloudRecon.discovered_ips || dataVercel.discovered_ips || [],
+        open_ports: dataVercel.open_ports || [],
+        country: dataVercel.country || dataCloudRecon.country || '—',
+        city: dataVercel.city || dataCloudRecon.city || '—',
+        isp: dataVercel.isp || dataCloudRecon.isp || '—',
+        asn: dataVercel.asn || dataCloudRecon.asn || '—',
+        cloudflare_detected: dataCloudRecon.cloudflare_detected || dataVercel.cloudflare_detected || false,
+        confidence: dataCloudRecon.confidence || dataVercel.confidence || 'LOW'
+      };
 
-      // ========== ISI RESULT ==========
-      document.getElementById('resIp').textContent = data.origin_ip || '—';
-      document.getElementById('resRealIp').textContent = data.origin_ip || '—';
-      document.getElementById('resAsn').textContent = data.asn || data.org || '—';
-      document.getElementById('resProvider').textContent = data.isp || data.org || '—';
-      document.getElementById('resCountry').textContent = data.country || '—';
-      document.getElementById('resCity').textContent = data.city || '—';
-      
+      logLine('[+] berhasil mengambil data dari 2 sumber', 'l-ok');
+
+      // ===== ISI RESULT =====
+      const exposed = combined.origin_ip && combined.origin_ip !== 'tidak ditemukan' ? 'YES' : 'NO';
+
+      document.getElementById('resIp').textContent = combined.origin_ip || '—';
+      document.getElementById('resRealIp').textContent = combined.origin_ip || '—';
+      document.getElementById('resAsn').textContent = combined.asn || combined.isp || '—';
+      document.getElementById('resProvider').textContent = combined.isp || '—';
+      document.getElementById('resCountry').textContent = combined.country || '—';
+      document.getElementById('resCity').textContent = combined.city || '—';
+
       const cfEl = document.getElementById('resCf');
-      cfEl.textContent = data.cloudflare_detected ? 'YES' : 'NO';
-      cfEl.className = 'v ' + (data.cloudflare_detected ? 'yellow' : 'green');
+      cfEl.textContent = combined.cloudflare_detected ? 'YES' : 'NO';
+      cfEl.className = 'v ' + (combined.cloudflare_detected ? 'yellow' : 'green');
 
       const expEl = document.getElementById('resExposed');
       expEl.textContent = exposed;
       expEl.className = 'v ' + (exposed === 'YES' ? 'green' : 'red');
 
       const confEl = document.getElementById('resConfidence');
-      const confidence = data.confidence || (data.origin_ip && data.origin_ip !== 'tidak ditemukan' ? 'MEDIUM' : 'LOW');
-      confEl.textContent = confidence;
-      confEl.className = 'v ' + (confidence === 'HIGH' ? 'green' : confidence === 'MEDIUM' ? 'yellow' : 'red');
+      confEl.textContent = combined.confidence;
+      confEl.className = 'v ' + (combined.confidence === 'HIGH' ? 'green' : combined.confidence === 'MEDIUM' ? 'yellow' : 'red');
 
-      // ========== LOG TAMBAHAN ==========
-      if (data.discovered_ips?.length > 0) {
-        logLine(`[+] total IP ditemukan: ${data.discovered_ips.length}`, 'l-muted');
+      // ===== LOG TAMBAHAN =====
+      if (combined.discovered_ips?.length > 0) {
+        logLine(`[+] total IP ditemukan: ${combined.discovered_ips.length}`, 'l-muted');
       }
-      const srcList = data.sources ? Object.keys(data.sources).filter(k => data.sources[k]?.length > 0) : [];
-      if (srcList.length > 0) logLine(`[+] sumber: ${srcList.join(', ')}`, 'l-muted');
+      if (combined.open_ports?.length > 0) {
+        logLine(`[+] port terbuka: ${combined.open_ports.join(', ')}`, 'l-muted');
+      }
 
     } catch (err) {
       logLine('[!] gagal: ' + err.message, 'l-warn');
