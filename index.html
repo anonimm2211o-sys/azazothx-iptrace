@@ -258,7 +258,7 @@
 
   // ======== API ENDPOINTS (GANTI DENGAN URL DEPLOY LU) ========
   const API_VERCEL = 'https://beckend-iptrace.vercel.app/api/lookup';
-  const API_CLOUDRECON = 'https://cloudrecon-api.vercel.app/api';
+  const API_CLOUDRECON = 'https://cloudrecon-api.vercel.app/cloudrecon/recon.py';
 
   async function runLookup() {
     const domain = input.value.trim().replace(/^https?:\/\//, '').split('/')[0];
