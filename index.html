@@ -17,9 +17,8 @@
     .wrap {
       max-width: 880px;
       margin: 0 auto;
-      position: relative;
       background: rgba(0, 0, 0, 0.65);
-      padding: 24px 24px 20px;
+      padding: 24px;
       border-radius: 12px;
       border: 1px solid rgba(255, 255, 255, 0.08);
     }
@@ -28,36 +27,30 @@
       justify-content: space-between;
       align-items: baseline;
       margin-bottom: 16px;
+      flex-wrap: wrap;
     }
-    .logo {
-      font-size: 24px;
-      font-weight: 700;
-      color: #ffffff;
-      text-shadow: 0 0 20px rgba(255,255,255,0.15);
-    }
+    .logo { font-size: 24px; font-weight: 700; color: #fff; }
     .clock {
       font-size: 13px;
-      color: #ffffff;
+      color: #fff;
       opacity: 0.6;
       background: rgba(0,0,0,0.4);
       padding: 6px 14px;
-      border: 1px solid rgba(255,255,255,0.08);
       border-radius: 20px;
+      border: 1px solid rgba(255,255,255,0.08);
     }
     .prompt-row {
       display: flex;
-      gap: 0;
       border: 1px solid rgba(255,255,255,0.08);
       background: rgba(0,0,0,0.4);
       border-radius: 6px;
-      margin: 0 0 14px 0;
+      margin-bottom: 14px;
     }
     .prompt-label {
       padding: 14px;
-      color: #ffffff;
-      border-right: 1px solid rgba(255,255,255,0.08);
-      font-size: 14px;
+      color: #fff;
       opacity: 0.5;
+      border-right: 1px solid rgba(255,255,255,0.08);
     }
     input {
       flex: 1;
@@ -65,7 +58,7 @@
       border: none;
       outline: none;
       padding: 14px;
-      color: #ffffff;
+      color: #fff;
       font-family: inherit;
       font-size: 15px;
     }
@@ -76,30 +69,19 @@
       flex-wrap: wrap;
       margin-bottom: 20px;
     }
-    button {
+    button, .chip {
       background: #1e4f33;
       border: none;
       padding: 12px 28px;
-      color: #ffffff;
+      color: #fff;
       font-family: inherit;
       font-weight: 700;
       border-radius: 6px;
       cursor: pointer;
-      font-size: 14px;
       transition: 0.2s;
     }
-    button:hover { background: #2d7a4f; box-shadow: 0 0 18px #1e4f33; }
-    .chip {
-      background: #1e4f33;
-      border: none;
-      padding: 10px 16px;
-      border-radius: 20px;
-      color: #ffffff;
-      cursor: pointer;
-      font-size: 12px;
-      transition: 0.2s;
-    }
-    .chip:hover { background: #2d7a4f; box-shadow: 0 0 18px #1e4f33; }
+    button:hover, .chip:hover { background: #2d7a4f; box-shadow: 0 0 18px #1e4f33; }
+    .chip { padding: 10px 16px; border-radius: 20px; font-size: 12px; }
     #log {
       border: 1px solid rgba(255,255,255,0.08);
       background: rgba(0,0,0,0.4);
@@ -109,7 +91,6 @@
       white-space: pre-wrap;
       font-size: 13px;
       line-height: 1.8;
-      margin-top: 8px;
       color: rgba(255,255,255,0.7);
     }
     .result {
@@ -127,11 +108,7 @@
       background: rgba(0,0,0,0.3);
       border-bottom: 1px solid rgba(255,255,255,0.08);
     }
-    .result-head .ip {
-      font-size: 22px;
-      font-weight: 700;
-      color: #ffffff;
-    }
+    .result-head .ip { font-size: 22px; font-weight: 700; color: #4dff88; }
     .badge {
       color: rgba(255,255,255,0.4);
       border: 1px solid rgba(255,255,255,0.1);
@@ -147,20 +124,25 @@
     .cell {
       padding: 14px 20px;
       background: rgba(0,0,0,0.2);
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
     }
     .cell .k {
       font-size: 10px;
       color: rgba(255,255,255,0.3);
       text-transform: uppercase;
       letter-spacing: 0.06em;
-      margin-bottom: 4px;
     }
     .cell .v {
       font-size: 15px;
-      color: #ffffff;
+      color: #fff;
       font-weight: 600;
       word-break: break-all;
     }
+    .cell .v.green { color: #4dff88; }
+    .cell .v.red { color: #ff5c5c; }
+    .cell .v.yellow { color: #ffb454; }
     .footer {
       margin-top: 40px;
       font-size: 11px;
@@ -172,44 +154,32 @@
     .l-ok { color: #4dff88; }
     .l-warn { color: #ff5c5c; }
     .l-muted { color: rgba(255,255,255,0.4); }
-    .l-tag { color: #6ec9ff; }
-    @media (max-width: 640px) { .grid { grid-template-columns: 1fr; } }
+    @media (max-width:640px){ .grid { grid-template-columns:1fr; } }
 
     #bgVideo {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      object-fit: cover;
-      z-index: -1;
+      position: fixed; top:0; left:0;
+      width:100%; height:100%;
+      object-fit:cover;
+      z-index:-1;
     }
-
     .audio-toggle {
-      position: fixed;
-      top: 16px;
-      left: 16px;
-      z-index: 999;
-      background: rgba(0,0,0,0.5);
-      border: 1px solid rgba(255,255,255,0.1);
-      border-radius: 30px;
-      padding: 8px 14px;
-      color: #ffffff;
-      font-size: 13px;
-      font-family: 'JetBrains Mono', monospace;
-      cursor: pointer;
-      transition: 0.2s;
-      backdrop-filter: blur(2px);
-      display: flex;
-      align-items: center;
-      gap: 6px;
+      position: fixed; top:16px; left:16px; z-index:999;
+      background:rgba(0,0,0,0.5);
+      border:1px solid rgba(255,255,255,0.1);
+      border-radius:30px;
+      padding:8px 14px;
+      color:#fff;
+      font-size:13px;
+      font-family:'JetBrains Mono',monospace;
+      cursor:pointer;
+      backdrop-filter:blur(2px);
+      display:flex;
+      align-items:center;
+      gap:6px;
     }
-    .audio-toggle:hover {
-      background: rgba(30, 79, 51, 0.7);
-      border-color: #1e4f33;
-    }
-    .audio-toggle .icon { font-size: 16px; }
-    @media (max-width: 640px) {
-      .audio-toggle { top: 10px; left: 10px; padding: 6px 12px; font-size: 11px; }
-    }
+    .audio-toggle:hover { background:rgba(30,79,51,0.7); border-color:#1e4f33; }
+    .audio-toggle .icon { font-size:16px; }
+    @media (max-width:640px){ .audio-toggle { top:10px; left:10px; padding:6px 12px; font-size:11px; } }
   </style>
 </head>
 <body>
@@ -220,8 +190,7 @@
     <source src="Audio.mp3" type="audio/mpeg">
   </audio>
   <button class="audio-toggle" id="audioToggle">
-    <span class="icon">🔊</span>
-    <span id="audioLabel">On</span>
+    <span class="icon">🔊</span> <span id="audioLabel">On</span>
   </button>
 
 <div class="wrap">
@@ -232,7 +201,7 @@
 
   <div class="prompt-row">
     <span class="prompt-label">url&gt;</span>
-    <input id="urlInput" placeholder="contoh.com atau https://contoh.com" autocomplete="off">
+    <input id="urlInput" placeholder="contoh.com" autocomplete="off">
   </div>
   <div class="actions">
     <button id="runBtn">🔍 TRACE + PORT SCAN</button>
@@ -248,16 +217,17 @@
       <div class="badge">LIVE DATA</div>
     </div>
     <div class="grid">
-      <div class="cell"><div class="k">Domain</div><div class="v" id="resDomain">—</div></div>
-      <div class="cell"><div class="k">IP Asli</div><div class="v" id="resRealIp">—</div></div>
-      <div class="cell"><div class="k">Negara</div><div class="v" id="resCountry">—</div></div>
-      <div class="cell"><div class="k">Kota</div><div class="v" id="resCity">—</div></div>
-      <div class="cell"><div class="k">ISP</div><div class="v" id="resIsp">—</div></div>
-      <div class="cell"><div class="k">Port Terbuka</div><div class="v" id="resPorts">—</div></div>
+      <div class="cell"><div class="k">Resolved IP</div><div class="v" id="resRealIp">—</div></div>
+      <div class="cell"><div class="k">Network / ASN</div><div class="v" id="resAsn">—</div></div>
+      <div class="cell"><div class="k">Provider</div><div class="v" id="resProvider">—</div></div>
+      <div class="cell"><div class="k">Country</div><div class="v" id="resCountry">—</div></div>
+      <div class="cell"><div class="k">City</div><div class="v" id="resCity">—</div></div>
+      <div class="cell"><div class="k">Cloudflare</div><div class="v" id="resCf">—</div></div>
+      <div class="cell"><div class="k">Origin exposed</div><div class="v" id="resExposed">—</div></div>
+      <div class="cell"><div class="k">Confidence</div><div class="v" id="resConfidence">—</div></div>
     </div>
   </div>
-
-  <div class="footer">data real dari DNS + port scan — API by Vercel</div>
+  <div class="footer">data real — API by Vercel</div>
 </div>
 
 <script>
@@ -271,7 +241,7 @@
 
   // ======== LOG ========
   const log = document.getElementById('log');
-  function logLine(msg, cls = '') {
+  function logLine(msg, cls='') {
     const line = document.createElement('div');
     line.className = 'line ' + cls;
     line.textContent = msg;
@@ -282,23 +252,16 @@
   // ======== DOM ========
   const input = document.getElementById('urlInput');
   const runBtn = document.getElementById('runBtn');
-
   document.querySelectorAll('.chip').forEach(c => {
-    c.onclick = () => {
-      input.value = c.dataset.fill;
-      input.focus();
-    };
+    c.onclick = () => { input.value = c.dataset.fill; input.focus(); };
   });
 
-  // ======== API BACKEND ========
+  // ======== API ========
   const API_BASE = 'https://beckend-iptrace.vercel.app/api/lookup';
 
   async function runLookup() {
     const domain = input.value.trim().replace(/^https?:\/\//, '').split('/')[0];
-    if (!domain) {
-      logLine('[!] masukkan domain dulu', 'l-warn');
-      return;
-    }
+    if (!domain) { logLine('[!] masukkan domain dulu', 'l-warn'); return; }
 
     log.innerHTML = '';
     runBtn.disabled = true;
@@ -307,33 +270,40 @@
     try {
       const res = await fetch(`${API_BASE}?domain=${domain}`);
       const data = await res.json();
-
       if (data.error) throw new Error(data.error);
 
       logLine('[+] berhasil mengambil data', 'l-ok');
 
-      // ========== ISI RESULT CARD ==========
-      document.getElementById('resIp').textContent = data.origin_ip || '—';
-      document.getElementById('resDomain').textContent = data.domain || '—';
-      document.getElementById('resRealIp').textContent = data.origin_ip || '—';
-      document.getElementById('resCountry').textContent = data.country || data.country_name || '—';
-      document.getElementById('resCity').textContent = data.city || '—';
-      document.getElementById('resIsp').textContent = data.isp || data.org || '—';
-      document.getElementById('resPorts').textContent = data.open_ports?.join(', ') || '—';
+      // ========== ORIGIN EXPOSED ==========
+      const exposed = data.origin_ip && data.origin_ip !== 'tidak ditemukan' ? 'YES' : 'NO';
 
-      // ========== LOG INFO TAMBAHAN ==========
-      if (data.cloudflare_detected !== undefined) {
-        logLine(`[+] cloudflare detected: ${data.cloudflare_detected ? '✅' : '❌'}`, 'l-muted');
-      }
-      if (data.discovered_ips && data.discovered_ips.length > 0) {
+      // ========== ISI RESULT ==========
+      document.getElementById('resIp').textContent = data.origin_ip || '—';
+      document.getElementById('resRealIp').textContent = data.origin_ip || '—';
+      document.getElementById('resAsn').textContent = data.asn || data.org || '—';
+      document.getElementById('resProvider').textContent = data.isp || data.org || '—';
+      document.getElementById('resCountry').textContent = data.country || '—';
+      document.getElementById('resCity').textContent = data.city || '—';
+      
+      const cfEl = document.getElementById('resCf');
+      cfEl.textContent = data.cloudflare_detected ? 'YES' : 'NO';
+      cfEl.className = 'v ' + (data.cloudflare_detected ? 'yellow' : 'green');
+
+      const expEl = document.getElementById('resExposed');
+      expEl.textContent = exposed;
+      expEl.className = 'v ' + (exposed === 'YES' ? 'green' : 'red');
+
+      const confEl = document.getElementById('resConfidence');
+      const confidence = data.confidence || (data.origin_ip && data.origin_ip !== 'tidak ditemukan' ? 'MEDIUM' : 'LOW');
+      confEl.textContent = confidence;
+      confEl.className = 'v ' + (confidence === 'HIGH' ? 'green' : confidence === 'MEDIUM' ? 'yellow' : 'red');
+
+      // ========== LOG TAMBAHAN ==========
+      if (data.discovered_ips?.length > 0) {
         logLine(`[+] total IP ditemukan: ${data.discovered_ips.length}`, 'l-muted');
       }
-      if (data.sources) {
-        const srcList = Object.keys(data.sources).filter(k => data.sources[k]?.length > 0);
-        if (srcList.length > 0) {
-          logLine(`[+] sumber: ${srcList.join(', ')}`, 'l-muted');
-        }
-      }
+      const srcList = data.sources ? Object.keys(data.sources).filter(k => data.sources[k]?.length > 0) : [];
+      if (srcList.length > 0) logLine(`[+] sumber: ${srcList.join(', ')}`, 'l-muted');
 
     } catch (err) {
       logLine('[!] gagal: ' + err.message, 'l-warn');
@@ -344,13 +314,10 @@
   }
 
   runBtn.onclick = runLookup;
-  input.onkeydown = e => {
-    if (e.key === 'Enter') runLookup();
-  };
+  input.onkeydown = e => { if(e.key === 'Enter') runLookup(); };
+  logLine('💡 ketik domain & tekan enter', 'l-muted');
 
-  logLine('💡 ketik domain & tekan enter atau tombol TRACE', 'l-muted');
-
-  // ======== AUDIO AUTOPLAY + TOGGLE ========
+  // ======== AUDIO ========
   const bgAudio = document.getElementById('bgAudio');
   const audioToggle = document.getElementById('audioToggle');
   const audioLabel = document.getElementById('audioLabel');
@@ -365,26 +332,15 @@
     });
   }
 
-  window.addEventListener('load', () => {
-    playAudio();
-  });
-
+  window.addEventListener('load', () => { playAudio(); });
   document.addEventListener('click', function firstClick() {
-    if (bgAudio.paused) {
-      playAudio();
-    }
+    if (bgAudio.paused) playAudio();
     document.removeEventListener('click', firstClick);
   });
-
   audioToggle.addEventListener('click', (e) => {
     e.stopPropagation();
-    if (bgAudio.paused) {
-      playAudio();
-    } else {
-      bgAudio.pause();
-      audioLabel.textContent = 'Off';
-      audioToggle.querySelector('.icon').textContent = '🔇';
-    }
+    if (bgAudio.paused) playAudio();
+    else { bgAudio.pause(); audioLabel.textContent='Off'; audioToggle.querySelector('.icon').textContent='🔇'; }
   });
 </script>
 </body>
