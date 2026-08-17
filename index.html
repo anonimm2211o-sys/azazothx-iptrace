@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AZAZOTHX-IPTRACE</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap');
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: transparent;
+      color: #ffffff;
+      font-family: 'JetBrains Mono', monospace;
+      padding: 30px 20px;
+      min-height: 100vh;
+    }
+    .wrap {
+      max-width: 880px;
+      margin: 0 auto;
+      position: relative;
+      background: rgba(0, 0, 0, 0.65); /* tambah dikit biar teks kebaca */
+      padding: 24px 24px 20px;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 16px;
+    }
+    .logo {
+      font-size: 24px;
+      font-weight: 700;
+      color: #ffffff;
+      text-shadow: 0 0 20px rgba(255,255,255,0.15);
+    }
+    .clock {
+      font-size: 13px;
+      color: #ffffff;
+      opacity: 0.6;
+      background: rgba(0,0,0,0.4);
+      padding: 6px 14px;
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 20px;
+    }
+    .prompt-row {
+      display: flex;
+      gap: 0;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(0,0,0,0.4);
+      border-radius: 6px;
+      margin: 0 0 14px 0;
+    }
+    .prompt-label {
+      padding: 14px;
+      color: #ffffff;
+      border-right: 1px solid rgba(255,255,255,0.08);
+      font-size: 14px;
+      opacity: 0.5;
+    }
+    input {
+      flex: 1;
+      background: transparent;
+      border: none;
+      outline: none;
+      padding: 14px;
+      color: #ffffff;
+      font-family: inherit;
+      font-size: 15px;
+    }
+    input::placeholder { color: rgba(255,255,255,0.3); }
+    .actions {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+    button {
+      background: #1e4f33;
+      border: none;
+      padding: 12px 28px;
+      color: #ffffff;
+      font-family: inherit;
+      font-weight: 700;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: 0.2s;
+    }
+    button:hover { background: #2d7a4f; box-shadow: 0 0 18px #1e4f33; }
+    .chip {
+      background: #1e4f33;
+      border: none;
+      padding: 10px 16px;
+      border-radius: 20px;
+      color: #ffffff;
+      cursor: pointer;
+      font-size: 12px;
+      transition: 0.2s;
+    }
+    .chip:hover { background: #2d7a4f; box-shadow: 0 0 18px #1e4f33; }
+    #log {
+      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(0,0,0,0.4);
+      padding: 16px;
+      border-radius: 6px;
+      min-height: 70px;
+      white-space: pre-wrap;
+      font-size: 13px;
+      line-height: 1.8;
+      margin-top: 8px;
+      color: rgba(255,255,255,0.7);
+    }
+    .result {
+      margin-top: 28px;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(0,0,0,0.4);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .result-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 20px;
+      background: rgba(0,0,0,0.3);
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+    .result-head .ip {
+      font-size: 22px;
+      font-weight: 700;
+      color: #ffffff;
+    }
+    .badge {
+      color: rgba(255,255,255,0.4);
+      border: 1px solid rgba(255,255,255,0.1);
+      padding: 4px 14px;
+      border-radius: 30px;
+      font-size: 11px;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      background: rgba(255,255,255,0.02);
+    }
+    .cell {
+      padding: 14px 20px;
+      background: rgba(0,0,0,0.2);
+    }
+    .cell .k {
+      font-size: 10px;
+      color: rgba(255,255,255,0.3);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 4px;
+    }
+    .cell .v {
+      font-size: 15px;
+      color: #ffffff;
+      font-weight: 600;
+    }
+    .footer {
+      margin-top: 40px;
+      font-size: 11px;
+      color: rgba(255,255,255,0.2);
+      border-top: 1px solid rgba(255,255,255,0.05);
+      padding-top: 18px;
+      text-align: center;
+    }
+    .l-ok { color: #4dff88; }
+    .l-warn { color: #ff5c5c; }
+    .l-muted { color: rgba(255,255,255,0.4); }
+    .l-tag { color: #6ec9ff; }
+    @media (max-width: 640px) { .grid { grid-template-columns: 1fr; } }
+
+    #bgVideo {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      object-fit: cover;
+      z-index: -1;
+    }
+  </style>
+</head>
+<body>
+  <video id="bgVideo" autoplay muted loop playsinline>
+    <source src="background.mp4" type="video/mp4">
+  </video>
+<div class="wrap">
+
+  <div class="header">
+    <div class="logo">AZAZOTHX-IPTRACE</div>
+    <div class="clock" id="clock">⏱️ --:-- WIB</div>
+  </div>
+
+  <div class="prompt-row">
+    <span class="prompt-label">url&gt;</span>
+    <input id="urlInput" placeholder="contoh.com atau https://contoh.com" autocomplete="off">
+  </div>
+  <div class="actions">
+    <button id="runBtn">🔍 TRACE + PORT SCAN</button>
+    <button class="chip" data-fill="google.com">google.com</button>
+    <button class="chip" data-fill="cloudflare.com">cloudflare.com</button>
+  </div>
+
+  <div id="log">⏳ sistem siap. masukkan domain & tekan TRACE.</div>
+
+  <div class="result" id="result">
+    <div class="result-head">
+      <div class="ip" id="resIp">—</div>
+      <div class="badge">LIVE DATA</div>
+    </div>
+    <div class="grid">
+      <div class="cell"><div class="k">Domain</div><div class="v" id="resDomain">—</div></div>
+      <div class="cell"><div class="k">IP Asli</div><div class="v" id="resRealIp">—</div></div>
+      <div class="cell"><div class="k">Negara</div><div class="v" id="resCountry">—</div></div>
+      <div class="cell"><div class="k">Kota</div><div class="v" id="resCity">—</div></div>
+      <div class="cell"><div class="k">ISP</div><div class="v" id="resIsp">—</div></div>
+      <div class="cell"><div class="k">Port Terbuka</div><div class="v" id="resPorts">—</div></div>
+    </div>
+  </div>
+
+  <div class="footer">data real dari DNS + port scan — API by Vercel</div>
+</div>
+
+<script>
+  const clockEl = document.getElementById('clock');
+  setInterval(() => {
+    const now = new Date();
+    const wib = new Date(now.getTime() + 7 * 60 * 60 * 1000);
+    clockEl.textContent = '⏱️ ' + wib.toISOString().slice(11, 19) + ' WIB';
+  }, 1000);
+
+  const log = document.getElementById('log');
+  function logLine(msg, cls = '') {
+    const line = document.createElement('div');
+    line.className = 'line ' + cls;
+    line.textContent = msg;
+    log.appendChild(line);
+    log.scrollTop = log.scrollHeight;
+  }
+
+  const input = document.getElementById('urlInput');
+  const runBtn = document.getElementById('runBtn');
+
+  document.querySelectorAll('.chip').forEach(c => {
+    c.onclick = () => {
+      input.value = c.dataset.fill;
+      input.focus();
+    };
+  });
+
+  // ======== API BACKEND ========
+  const API_BASE = 'https://backend-iptrace.vercel.app/api/lookup'; // ← GANTI DENGAN URL VERCEL LU
+
+  async function runLookup() {
+    const domain = input.value.trim().replace(/^https?:\/\//, '').split('/')[0];
+    if (!domain) {
+      logLine('[!] masukkan domain dulu', 'l-warn');
+      return;
+    }
+
+    log.innerHTML = '';
+    runBtn.disabled = true;
+    runBtn.textContent = '⏳ LOOKUP...';
+
+    try {
+      const res = await fetch(`${API_BASE}?domain=${domain}`);
+      const data = await res.json();
+
+      if (data.error) throw new Error(data.error);
+
+      logLine('[+] berhasil mengambil data', 'l-ok');
+
+      document.getElementById('resIp').textContent = data.ip;
+      document.getElementById('resDomain').textContent = data.domain;
+      document.getElementById('resRealIp').textContent = data.ip;
+      document.getElementById('resCountry').textContent = data.country;
+      document.getElementById('resCity').textContent = data.city;
+      document.getElementById('resIsp').textContent = data.isp;
+      document.getElementById('resPorts').textContent = data.openPorts.join(', ') || '—';
+
+    } catch (err) {
+      logLine('[!] gagal mengambil data: ' + err.message, 'l-warn');
+    }
+
+    runBtn.disabled = false;
+    runBtn.textContent = '🔍 TRACE + PORT SCAN';
+  }
+
+  runBtn.onclick = runLookup;
+  input.onkeydown = e => {
+    if (e.key === 'Enter') runLookup();
+  };
+
+  logLine('💡 ketik domain & tekan enter atau tombol TRACE', 'l-muted');
+</script>
+</body>
+</html>
